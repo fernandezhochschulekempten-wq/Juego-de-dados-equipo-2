@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Juego Equipo 2 - Rojo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Poppins', sans-serif; text-align:center; margin:0; padding:20px; background:#fdf0f2; color:#333; }
+  h1 { color: #e91e63; margin-bottom:5px; }
+  #instruccion { font-size:16px; margin-bottom:20px; }
+  #dado { font-size:80px; cursor:pointer; margin-top:10px; transition: transform 0.2s; }
+  #dado:hover { transform: scale(1.2); }
+  #verbo { font-size:22px; margin-top:15px; font-weight:500; }
+  input { font-size:16px; padding:10px; margin-top:10px; border-radius:5px; border:1px solid #ccc; width:250px; }
+  button { font-size:16px; padding:10px 20px; margin-left:5px; border-radius:5px; border:none; background:#e91e63; color:white; cursor:pointer; transition: background 0.2s; }
+  button:hover { background:#b0003a; }
+  #feedback { font-size:18px; margin-top:10px; min-height:24px; }
+  #puntos { font-size:22px; margin-top:20px; font-weight:600; color:#e91e63; }
+  #temporizador { font-size:28px; margin-top:10px; font-weight:600; color:#ff5722; }
+  .card { background:white; padding:20px; border-radius:10px; display:inline-block; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-top:10px; }
+</style>
+</head>
+<body>
+
+<h1>Juego Equipo 2 - Rojo</h1>
+
+<p id="instruccion">
+Haz clic en el dado 🎲 para obtener un verbo y un pronombre. Conjuga correctamente. <br>
+Los puntos se acumulan automáticamente. La solución solo aparece al terminar el tiempo.
+</p>
+
+<div class="card">
+  <p id="temporizador">Tiempo: 30s</p>
+  <div id="dado">🎲</div>
+  <p id="verbo"></p>
+  <input type="text" id="respuesta" placeholder="Escribe la conjugación">
+  <button onclick="checar()">Comprobar</button>
+  <p id="feedback"></p>
+</div>
+
+<h3>Puntos</h3>
+<div class="card" id="puntos">0</div>
+
+<script>
+const verbos = ["hablar","trabajar","estudiar","viajar","visitar","pasar las vacaciones","comprar","escuchar música"];
+const pronombres = ["yo","tú","él/ella","nosotros","vosotros","ellos/ellas"];
+const conjugaciones = {
+  "hablar":["hablo","hablas","habla","hablamos","habláis","hablan"],
+  "trabajar":["trabajo","trabajas","trabaja","trabajamos","trabajáis","trabajan"],
+  "estudiar":["estudio","estudias","estudia","estudiamos","estudiáis","estudian"],
+  "viajar":["viajo","viajas","viaja","viajamos","viajáis","viajan"],
+  "visitar":["visito","visitas","visita","visitamos","visitáis","visitan"],
+  "pasar las vacaciones":["paso las vacaciones","pasas las vacaciones","pasa las vacaciones","pasamos las vacaciones","pasáis las vacaciones","pasan las vacaciones"],
+  "comprar":["compro","compras","compra","compramos","compráis","compran"],
+  "escuchar música":["escucho música","escuchas música","escucha música","escuchamos música","escucháis música","escuchan música"]
+};
+
+let verboActual = "";
+let pronombreActual = "";
+let puntos = 0;
+let tiempoRestante = 30;
+let timer;
+
+// Iniciar temporizador
+function iniciarTemporizador(){
+  clearInterval(timer);
+  tiempoRestante = 30;
+  document.getElementById("temporizador").innerText = `Tiempo: ${tiempoRestante}s`;
+  timer = setInterval(() => {
+    tiempoRestante--;
+    document.getElementById("temporizador").innerText = `Tiempo: ${tiempoRestante}s`;
+    if(tiempoRestante <=0){
+      mostrarSolucion();
+    }
+  },1000);
+}
+
+// Mostrar solución al terminar el tiempo
+function mostrarSolucion(){
+  clearInterval(timer);
+  if(verboActual){
+    const index = pronombres.indexOf(pronombreActual);
+    document.getElementById("feedback").innerText = 
+      `⏱️ Tiempo terminado. La forma correcta era: ${conjugaciones[verboActual][index]}`;
+  }
+  verboActual = "";
+  pronombreActual = "";
+  document.getElementById("verbo").innerText = "";
+  document.getElementById("respuesta").value = "";
+  setTimeout(()=>{ document.getElementById("feedback").innerText=""; },3000);
+}
+
+// Dado digital
+document.getElementById("dado").onclick = functi
